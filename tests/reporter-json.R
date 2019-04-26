@@ -51,7 +51,7 @@ JsonReporter <- R6::R6Class("JsonReporter",
       errors <- sum(test_results$passed == -1)
       timestamp <- private$timestamp()
 
-      self$cat_line(glue('{{\n  "suite": "{self$test_context}",\n  "timestamp": "{timestamp}",\n  "suiteTime": "{suiteTime}",\n  "passed": {tolower(as.character(full_pass))},\n  "tests": {tests},\n  "failures": {failures},\n  "errors": {errors},\n'))
+      self$cat_line(glue('[{{\n  "suite": "{self$test_context}",\n  "timestamp": "{timestamp}",\n  "suiteTime": "{suiteTime}",\n  "passed": {tolower(as.character(full_pass))},\n  "tests": {tests},\n  "failures": {failures},\n  "errors": {errors},\n'))
       self$cat_line('  "testResults": [')
 
       for (row in 1:nrow(test_results)) {
@@ -68,7 +68,7 @@ JsonReporter <- R6::R6Class("JsonReporter",
         self$cat_line(glue('    {{ "tag": "{tag}", "time": {time}, "passed": {tolower(as.logical(passed))}, "error": {{ "message": "{result}"}} }}{comma}'))
       }
 
-      self$cat_line('  ]\n}')
+      self$cat_line('  ]\n}]')
     }
   ),
 
