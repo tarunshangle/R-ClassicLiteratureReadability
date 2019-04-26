@@ -6,63 +6,13 @@ solution <- new.env()
 source('tests/solution.R', local = solution)
 
 user <- new.env()
-source('time.R', local = user)
+source('reading.R', local = user)
 
 parsed <- parse_exprs(file('time.R'))
 
 for (line in parsed) {
-  if(is_call(line, '<-') && is_symbol(line[[2]]) && line[[2]] == 'p') {
-    base_ggplot_call <- line[[3]]
-    if (base_ggplot_call[[1]] == 'ggplot') {
-      simple_ggplot_call <- TRUE
-    } else if (base_ggplot_call[[1]] == '+' && base_ggplot_call[[3]] == 'geom_line()') {
-      simple_ggplot_call <- TRUE
-      geom_line_call <- TRUE
-      complex_ggplot_call <- base_ggplot_call[[2]]
-      if(length(complex_ggplot_call) >= 2){
-        if(complex_ggplot_call[[2]] == 'time_long') {
-          correct_df <- TRUE
-        }
-        if(length(complex_ggplot_call) >= 3) {
-          aes_call <- complex_ggplot_call[[3]]
-          if(length(aes_call) >= 1) {
-            if (is_call(aes_call) && aes_call[[1]] == 'aes') {
-              aes_call_test <- TRUE
-              aes_call_s <- call_standardise(aes_call)
-              aes_x <- aes_call_s$x
-              aes_y <- aes_call_s$y
-              aes_color <- aes_call_s$color
-            }
-          }
-        }
-
-      }
-     
-    }
-  }
-  
   if(line[[1]] == 'plot' && line[[2]] == 'p') {
     plot_call <- TRUE
-  }
-  
-  if(line[[1]] == 'library') {
-    imported_package <- toString(line[[2]])
-    if(imported_package == 'readr'){
-      readr_package <- TRUE
-    }
-    if(imported_package == 'dplyr'){
-      dplyr_package <- TRUE
-    }
-    if(imported_package == 'stringr'){
-      stringr_package <- TRUE
-    }
-    if(imported_package == 'tidyr'){
-      tidyr_package <- TRUE
-    }
-    if(imported_package == 'ggplot2'){
-      ggplot2_package <- TRUE
-    }
-    
   }
 }
 
