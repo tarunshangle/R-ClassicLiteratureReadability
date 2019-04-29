@@ -32,7 +32,7 @@ if (!interactive()) {
   option_list <- list(
     make_option(c('-m', '--module'), type = 'character', default = 'all',
                 help='Module to test.'),
-    make_option(c('-r', '--reporter'), type = 'character', default = 'junit',
+    make_option(c('-r', '--reporter'), type = 'character', default = 'json',
                 help='Reporter to use.')
   )
   opt <- parse_args(OptionParser(option_list=option_list))
