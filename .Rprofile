@@ -3,5 +3,7 @@ source("packrat/init.R")
 #### -- End Packrat Autoloader -- ####
 
 .run <- new.env()
-source("run_tests.R", local = .run)
+if(interactive()) {
+  source("run_tests.R", local = .run)
+}
 attach(.run)
