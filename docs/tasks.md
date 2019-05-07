@@ -13,7 +13,7 @@ To install the needed R packages for this project run the following command in t
 
 This install process can take some time, when it is finished the prompt will return.
 The console will list all of the packages that were installed.
-You can also click on the `Packages` tab in the bottom right of `RStudio` to verify the install process was successful. 
+You can also click on the `Packages` tab in the bottom right of `RStudio` to verify that the install process was successful. 
 
 ## Verify Setup
 
@@ -35,13 +35,13 @@ In order to see your work, you can click the `source` button at the top right of
 
 Project Overview
 -----
-In this module we'll create a visualization that presents data about Charles Dickens' literary works.
+In this module we'll create a visualization that presents data about the top authors reading ease.
 
 The data set provided for this module is separated into two main csv files. One called `titles.csv` and the other called `stats.csv`.
 
 Each file was created using data compiled from Project Gutenberg. There is a common column between the data sets, the Project Gutenberg eBook `id`, which we will use to join the two csv files together.
 
-We will filter this data to only include Dickens' work and then plot it using the ggplot2 package.
+We will filter this data to only include only the works of the top ten authors and then plot it using the ggplot2 package.
 
 We will use the tidyverse collection of packages. For more on the tidyverse and it's opinionated design philosophy, grammar, and data structures see [Tidyverse](https://www.tidyverse.org/).
 
@@ -49,81 +49,108 @@ First Task
 ---
 Open the file called `reading.R` that is located in the root folder of the project. We will be working in this file for the duration of this module.
 
-In our plot for this module we would like to show certain statistics about the top ten download authors. We will prepare the data and create this plot in a new file.
+In our plot for this module we would like to show two reading ease metrics for the authors of the top ten most downloaded books on Project Gutenberg.
 
-Open the file called `reading.R`.
-Since we are in a new file we need access to the `books` DataFrame in `data.R`. Use the `source()` function to import the `data.R` file.
-Pipe the `books` DataFrame to the `arrange()` function.
-Pass the `arrange()` function a call to the `desc()` function.
-Pass the `downloads` column to `desc()` to order by `downloads` descending.
-Save the resulting DataFrame as `books`.
+Use the `source()` function to import the `data.R` file.
+
+Using functions from the `dplyr` package order the `books` data frame by `download` descending. Save the resulting reordered data frame as books.
 
 ## 2.2 - Select Relevant Variables
-Still in `reading.R`, refine the columns of the `books` DataFrame with a pipe and `select()` function. 
-We only want the columns: `author`, `title`, `words`, `syllables`, and `sentences`. 
-The resulting DataFrame should be called `books`.
+
+For this plot we only need the columns used to calculate the two reading ease metrics, which are `author`, `title`, `words`, `syllables`, and `sentences`. Using a pipe `%>%` and the `select()` function refine the columns to those listed. 
+
+The resulting data frame should be called `books`.
 
 ## 2.3 - Top Ten Authors
 
-We need to pull out the authors of the top ten downloaded books.
+We need a `list` of the authors of the top ten books for our plot.  
 
-Pipe the `books` DataFrame to the `head()` function, we only want the first 10 rows.
-Pipe `head()` to the `pull()` function.
-Pass the `author` column to `pull()` to order convert the data to a list. 
-Save the resulting list as `top_ten_authors`.
+Use the `head()` and `pull()` functions to get a `list` of the top ten authors from the `books` data frame.
+
+Save the resulting `list` as `top_ten_authors`.
 
 ## 2.4 - Filtering by the Top Ten Author
 
-With the top ten authors stored in `top_ten_authors` we can find all books by these authors.
+With the top ten authors stored in `top_ten_authors` we can find all the works by these authors.
 
-Pipe the `books` DataFrame to the `filter()` function.
-Pass the construct `author %in% top_ten_authors` to `filter()`.
-Pipe the result to `arrange()` to order by author.
+Use the construct `%in%` in a `filter()` function to refine the `books` data frame to only contain the works of the authors in the list `top_ten_authors`. Then order the data frame by `author`.
+
 Save the resulting list as `authors_books`.
 
 ## 2.5 - Adding a Flesch Reading Ease Variable
 
-We can not calculate the readability of the top ten authors using the Flesch Reading Ease formula.
+We can calculate the readability of the top ten authors using the Flesch Reading Ease formula.
 Which is: `206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words)`.
 
-Pipe the `authors_books` DataFrame to the `mutate()` function.
-Pass the `mutate()` function the keyword argument `flesch_reading_ease` set equal to the formula above.
+Use the `mutate()` function to add a column to the `authors_books` data frame. The new column should be called `flesch_reading_ease` and it should be set equal to the formula above.
+
 Save the resulting list as `reading`.
 
 ## 2.6 - Adding a Flesch Reading Grade Level Variable
 
-Just for good measure let's also calculate the Flesch/Kincaid Grade Level.
+Just for good measure let's also calculate the Flesch/Kincaid Grade Level metric.
 The formula is: `0.39 * (words / sentences) + 11.8 * (syllables / words) - 15.59`.
 
-Pipe the `reading` DataFrame to the `mutate()` function.
-Pass the `mutate()` function the keyword argument `flesch_kincaid_grade_level` set equal to the formula above.
-Save the resulting list as `reading`.
+Use the `mutate()` function to add a column to the `authors_books` data frame. The new column should be called `flesch_kincaid_grade_level` and it should be set equal to the formula above.
 
 ## 2.7 - Grouping by Author
 
-To prep the data for plotting, group the `reading` DataFrame by author using the `group_by()` function.
-Save the resulting DataFrame as `reading`.
+To  obtain an average for both readability metrics the data frame needs to be grouped by author behind the scenes.
+
+Group the `reading` data frame by author.
+
+Save the resulting data frame as `reading`.
 
 ## 2.8 - Summarising Reading Statistics
 
-The results of the `group_by()` function are not immediately apparent if we view the DataFrame.
-We need to use the `summarise()` function to make calculations.
+The results of the `group_by()` function are not immediately apparent if we view the data frame.
+We need to use the `summarise()` function to aggregate the data.
 
-Pipe the `reading` DataFrame to the `summarise()` function.
-Pass the `summarise()` function the keyword argument `flesch_reading_ease` set equal to the `mean()` of the `flesch_reading_ease` column.
-Pass the `summarise()` function a second keyword argument `flesch_kincaid_grade_level` set equal to the `mean()` of the `flesch_kincaid_grade_level` column.
-Save the resulting DataFrame as `reading`.
+Use the `summarise()` and `mean()` functions to calculate the mean for both the `flesch_reading_ease` and `flesch_kincaid_grade_level` columns.
+
+Save the resulting data frame as `reading_summary`.
 
 ## 2.9 - Reshaping with gather()
 
-Later on we are going to create a faceted bar plot. We need to use `gather()` to reshape the data for that type of plot.
+Later on we are going to create a faceted bar plot. We need to use `gather()` to reshape the `reading_summary` data frame for that type of plot.
 
-Pipe the `reading` DataFrame to the `gather()` function.
-The first two arguments of the `gather()` function are the names of the columns created after reshaping.
-The first should be called `type` and the second `score`.
-The final argument is the column or columns to reshape. 
-Use `flesch_reading_ease:flesch_kincaid_grade_level` to select all columns.
-Save this back to `reading`.
+The `gather()` function requires the that you provide the names for the columns that are created as part of the reshaping process. 
+
+The first column should be `type` and the second should be `score`.
+
+The last argument to the `gather()` function is the column or columns to reshape. Select all columns.
+
+Save this back to `reading_long`.
+
+## 2.10 - Initialize a Plot Object
+
+To construct a plot we will use the core function of the `ggplot2` library, `ggplot()`, which stands for grammar and graphics plot. You can find the relevant documentation here: [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html).
+
+Let's add a call to the core `ggplot()` function and save the results to a variable called `p`.
+
+To view the plot in `RStudio`, on a new line call the `plot()` function and pass in `p` as an argument.
+
+## 2.11 - Adding a Component
+The call to `ggplot()` creates a plot object, in our case `p`. The call to `ggplot()` is almost always followed by a call to one or more geom functions. Each geom function creates a layer on the plot. 
+
+Add a layer to the plot that has the mappings for a bar plot. This is done by adding the `geom_bar()` function to the `ggplot()` function with the plus operator. **Hint: ggplot() + geom_function()**
+
+The ensure the correct mappings `geom_bar()` requires a `stat`  named argument with a value of `identity`.
+
+## 2.12 - Aesthetic Mappings
+Columns in our `reading_long` data frame can be mapped to a layer using the `aes()` function.
+
+Pass the `reading_long` data frame as the first argument to the `ggplot()` function. 
+The second argument should be a call to the `aes()` function. 
+
+The following mappings should be passed to the `aes()` function. 
+
+- The x-axis should be the `year`.
+- The y-axis should be the `value`.
+- The color should be the `type`.
+
+To view the plot click the `Source` button in the upper right of the editor pane.
+
 
 ## 2.10 - Create a Bar Plot
 
