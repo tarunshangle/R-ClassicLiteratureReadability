@@ -20,42 +20,34 @@ for (line in parsed) {
 }
 
 context('Module 01')
-test_that('@arrange_by_download', {
-})
-
-test_that('@select_relevant_variables', {
+test_that('@source-files', {
   expect('titles' %in% ls(envir = user), glue('Does the `titles` data frame exist in `{user_source_file}`?'))
 })
-
-test_that('@top_ten_authors', {
+test_that('@arrange-by-download', {
 })
-
-test_that('@filtering', {
+test_that('@select-columns', {
 })
-
-test_that('@mutate_flesch_reading_ease', {
+test_that('@top-ten-authors', {
 })
-
-test_that('@mutate_flesch_reading_grade_level', {
+test_that('@filter-top-ten-authors', {
 })
-
-test_that('@grouping_by_author', {
+test_that('@flesch-reading-ease', {
 })
-
-test_that('@summarising_reading_statistics', {
+test_that('@flesch-kincaid-grade-level', {
 })
-
-test_that('@gather', {
+test_that('@group-by-author', {
 })
-
-test_that('@gather', {
+test_that('@summarising-readability-metrics', {
 })
-
-test_that('@initialize_plot', {
+test_that('@reshape', {
 })
-
-test_that('@faceting_bar_plot', {
+test_that('@initialize-plot', {
 })
-
-test_that('@customizing_plot', {
+test_that('@geom-bar', {
+})
+test_that('@aes', {
+})
+test_that('@facet-grid', {
+})
+test_that('@customize-plot', {
 })
