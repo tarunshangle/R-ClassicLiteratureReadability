@@ -1,4 +1,4 @@
-# Build Visualizations of Classic Literature with R - DRAFT
+# Plotting Classic Literature Readability Scores with R - DRAFT
 
 ## Setup
 
