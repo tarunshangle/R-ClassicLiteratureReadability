@@ -57,7 +57,7 @@ Use the `source()` function to import the prepared file `data.R`.
 
 Using functions from the `dplyr` package order the `books` data frame by `download` descending. Save the resulting reordered data frame as `books_by_download`.
 
-## 1.3 - Select Relevant Variables
+## 1.3 - Select Relevant Columns
 
 Our plot only requires columns that are used to calculate the two reading ease metrics. These columns are `author`, `title`, `words`, `syllables`, and `sentences`. Using a pipe `%>%` and the `select()` function refine the `books_by_download` data frame so that it only contains these columns. 
 
@@ -96,13 +96,13 @@ The formula is: `0.39 * (words / sentences) + 11.8 * (syllables / words) - 15.59
 
 Use the `mutate()` function to add a column to the `reading_ease` data frame. The new column should be called `flesch_kincaid_grade_level` and it should be set equal to the formula above.
 
-Save the resulting data frame as `reading`.
+Save the resulting data frame as `reading_grade`.
 
 ## 1.8 - Group by Author
 
 To obtain an average for both readability metrics the data frame needs to be grouped by author behind the scenes.
 
-Group the `reading` data frame by `author`.
+Group the `reading_grade` data frame by `author`.
 
 Save the resulting data frame as `reading_grouped`.
 
