@@ -11,6 +11,11 @@ source('reading.R', local = user)
 
 parsed <- parse_exprs(file('reading.R'))
 
+source_arg <- ''
+ggplot_check <- 0
+ggplot_named_check <- 0
+geom_bar_check <- 0
+geom_bar_mapping_check <- FALSE
 
 for (line in parsed) {
   
@@ -27,13 +32,26 @@ for (line in parsed) {
     }
     
     if(length(right) >= 3) {
-      if(right[[1]] == '+' && is_call(right[[2]], 'ggplot') && is_call(right[[3]], 'geom_bar', 1)){
+      if(right[[1]] == '+' && is_call(right[[2]], 'ggplot') && is_call(right[[3]], 'geom_bar')){
+        
         ggplot_args <- call_args(right[[2]])
+        ggplot_check <- length(ggplot_args)
+        
         ggplot_named_args <- call_standardise(right[[2]])
+        ggplot_named_check <- length(ggplot_named_args)
+        
         if(is_call(ggplot_named_args$mapping, 'aes')) {
           aes_args <- call_standardise(ggplot_named_args$mapping)
         }
+        
         geom_bar_args <- call_standardise(right[[3]])
+        geom_bar_check <- length(geom_bar_args)
+        
+        if(!is.null(geom_bar_args$mapping)) {
+          geom_bar_mapping_check <- TRUE
+          geom_bar_aes <- call_standardise(geom_bar_args$mapping)
+        }
+        
         ggplot_called_zero <- TRUE
       }
       
@@ -121,7 +139,8 @@ test_that('Adding a Component @geom-bar', {
 })
 
 test_that('Aesthetic Mappings @aes', {
-  expect(length(ggplot_args) != 0, 'Have you added the proper arguments to the `ggplot()` function?')
+  expect(ggplot_check != 0, 'Have you added the proper arguments to the `ggplot()` function?')
+  expect(ggplot_named_check != 0, 'Have you added the proper arguments to the `ggplot()` function?')
   expect(ggplot_named_args$data == 'reading_long', 'Are you passing the `reading_long` data frame to the `ggplot()` function?')
   expect(exists('aes_args'), 'Have you passed a call to the `aes()` function as the second argument to the `ggplot()` function?')
   expect(aes_args$x == 'author', 'Was the `author` column passed to the `aes()` function?')
