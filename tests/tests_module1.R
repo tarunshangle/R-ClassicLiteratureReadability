@@ -12,6 +12,7 @@ source('reading.R', local = user)
 parsed <- parse_exprs(file('reading.R'))
 
 source_arg <- ''
+plot_arg <- ''
 ggplot_check <- 0
 ggplot_named_check <- 0
 geom_bar_check <- 0
@@ -76,7 +77,9 @@ for (line in parsed) {
 
   }
 
-  plot_arg <- ifelse(is_call(line, 'plot', 1), arg_list, '')
+  if (is_call(line, 'plot', 1)) {
+    plot_arg <- arg_list
+  }
 
 }
 
