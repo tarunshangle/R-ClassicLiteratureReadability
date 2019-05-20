@@ -16,7 +16,8 @@ plot_arg <- ''
 ggplot_check <- 0
 ggplot_named_check <- 0
 geom_bar_check <- 0
-geom_bar_mapping_check <- FALSE
+geom_bar_stat_check <- FALSE
+geom_bar_stat <- ''
 
 for (line in parsed) {
   
@@ -50,9 +51,9 @@ for (line in parsed) {
         geom_bar_args <- call_standardise(right[[3]])
         geom_bar_check <- length(geom_bar_args)
         
-        if(!is.null(geom_bar_args$mapping)) {
-          geom_bar_mapping_check <- TRUE
-          geom_bar_aes <- call_standardise(geom_bar_args$mapping)
+        if(!is.null(geom_bar_args$stat)) {
+          geom_bar_stat_check <- TRUE
+          geom_bar_stat <- geom_bar_args$stat
         }
         
         ggplot_called_zero <- TRUE
@@ -90,7 +91,7 @@ test_that('Source Files @source-files', {
 
 test_that('Arrange Books by Download @arrange-by-download', {
   expect('books_by_download' %in% ls(envir = user), 'Does the `books_by_download` data frame exist in `reading.R`?')
-  expect(isTRUE(all_equal(user$books_by_download, solution$books_by_download)), 'The `books_by_download` data frame does not contain the correct data ordered by download.')
+  expect(isTRUE(all_equal(user$books_by_download, solution$books_by_download, ignore_row_order = FALSE)), 'The `books_by_download` data frame does not contain the correct data ordered by download.')
 })
 
 test_that('Select Relevant Columns @select-columns', {
@@ -140,7 +141,8 @@ test_that('Initialize a Plot Object @initialize-plot', {
 
 test_that('Adding a Component @geom-bar', {
   expect(exists('geom_bar_args'), 'Was the `geom_bar()` function added to `ggplot()`?')
-  expect(geom_bar_args$stat == 'identity', 'Was the `geom_bar()` function added to `ggplot()`?')
+  expect(geom_bar_stat_check, 'Was the correct named argument added to the `geom_bar()` function?')
+  expect(geom_bar_stat == 'identity', 'Does the `stat` named argument have a value of `identity`?')
 })
 
 test_that('Aesthetic Mappings @aes', {
