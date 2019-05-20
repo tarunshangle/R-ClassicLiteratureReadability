@@ -20,8 +20,10 @@ geom_bar_mapping_check <- FALSE
 for (line in parsed) {
   
   arg_list <- call_args(line)
-  source_arg <- ifelse(is_call(line, 'source', 1), arg_list, '')
-
+  if (is_call(line, 'source', 1)) {
+    source_arg <- arg_list
+  }
+  
   if(is_call(line, '<-') && arg_list[[1]] == 'p') {
     
     right <- arg_list[[2]]
