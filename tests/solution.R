@@ -10,7 +10,7 @@ stats <- read_csv('data/stats.csv')
 books <- full_join(titles, stats) %>%
   filter(!str_detect(title, 'Project Gutenberg'))
 
-books_by_download<- books %>% arrange(desc(downloads))
+books_by_download <- books %>% arrange(desc(downloads))
 books_refined <- books_by_download %>% select(author, title, words, syllables, sentences)
 top_ten_authors <- books %>% head(10) %>% pull(author)
 authors_books <- books %>% filter(author %in% top_ten_authors) %>% arrange(author)
